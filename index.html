@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Photon</title>
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="../css/photon.min.css">
+
+  <!-- Javascript -->
+  <script src="js/menu.js" charset="utf-8"></script>
+</head>
+
+<body>
+  <div class="window">
+
+    <!-- .toolbar-header sits at the top of your app -->
+    <header class="toolbar toolbar-header">
+      <h1 class="title">Photon</h1>
+    </header>
+
+    <!-- Your app's content goes inside .window-content -->
+    <div class="window-content">
+      <div class="pane-group">
+        <div class="pane pane-sm sidebar">
+          <button id="LoadLicensesButton">Load Licenses</button>
+        </div>
+        <div class="pane">
+          <table id="license-table" class="table-striped">
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>require('./js/controller')</script>
+</body>
+
+</html>
