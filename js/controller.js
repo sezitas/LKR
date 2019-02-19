@@ -3,7 +3,7 @@ const LicenceList = require('./licenceList');
 
 var myLicences = null;
 
-document.getElementById('LoadLicensesButton').addEventListener('click', _ => {
+document.getElementById('loadButton').addEventListener('click', _ => {
   getLicences('./res/licenceKeyLog.txt', './res/adapters.txt');
 })
 
@@ -12,23 +12,37 @@ function loadTable() {
   let rowCursor = 0
   let licenseTable = document.getElementById('license-table')
   licenseTable.innerHTML = ""
-  let header = licenseTable.createTHead()
-  let row = header.insertRow(0)
 
-  myLicences.listHeaders.forEach( (value, index) => {
-    row.insertCell(index).innerHTML = `<b>${value}</b>`
+  let head = document.createElement('thead')  // let head = licenseTable.createTHead()
+  let row = document.createElement('tr')
+  myLicences.listHeaders.forEach((value, index) => {
+    let cell = document.createElement('th')
+    cell.innerHTML = value
+    row.appendChild(cell);
   })
+  head.appendChild(row)
+  licenseTable.appendChild(head)
 
+  let body = document.createElement('tbody')
+  licenseTable.appendChild(document.createElement('tbody'))
   myLicences.licences.forEach((licence, index) => {
-    row = header.insertRow(index+1)
-    row.insertCell(0).innerHTML = licence.companyName
-    row.insertCell(1).innerHTML = licence.version
-    row.insertCell(2).innerHTML = licence.beginDate
-    row.insertCell(3).innerHTML = licence.endDate
-    row.insertCell(4).innerHTML = licence.adapters
-    row.insertCell(5).innerHTML = licence.idkWhatThisis
-    row.insertCell(6).innerHTML = licence.licence
+    let row = document.createElement('tr')
+    insertCell(row, licence.companyName)
+    insertCell(row, licence.version)
+    insertCell(row, licence.beginDate)
+    insertCell(row, licence.endDate)
+    insertCell(row, licence.adapters)
+    insertCell(row, licence.idkWhatThisis)
+    insertCell(row, licence.licence)
+    body.appendChild(row)
   })
+  licenseTable.appendChild(body)
+}
+
+function insertCell(row, value) {
+  let cell = document.createElement('td')
+  cell.innerHTML = value
+  row.appendChild(cell)
 }
 
 function getLicences(licenceFile, adaptersFile) {

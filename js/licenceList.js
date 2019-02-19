@@ -27,7 +27,7 @@ class Adapter {
 
 class LicenceList {
     constructor(change) {
-        this.listHeaders = ['companyName', 'version', 'beginDate', 'endDate', 'adapters', 'idkWhatThisis', 'licence']
+        this.listHeaders = ['Client', 'Ver', 'Start', 'End', 'Adapter ID', 'idk', 'License Key']
         this.licences = []
         this.adapters = []
     }
