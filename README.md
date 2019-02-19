@@ -1,3 +1,3 @@
 # license-key-reader_photon
 
-![alt text](./src/screenshot.png)
+![Main Window](src/screenshot.png?raw=true "License Key Reader")
