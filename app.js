@@ -11,19 +11,19 @@ app.on('window-all-closed', function() {
 app.on('ready', function() {
 
   mainWindow = new BrowserWindow({
-    width: 1028,
-    height: 798,
-    'min-width': 500,
-    'min-height': 200,
+    width: 1280,
+    height: 550,
+    // 'min-width': 700,
+    // 'min-height': 550,
     'accept-first-mouse': true,
     'title-bar-style': 'hidden',
     webPreferences: {
       nodeIntegration: true
     }
-  });
+  })
 
   mainWindow.loadURL('file://' + __dirname + '/index.html')
-  mainWindow.openDevTools()
+  // mainWindow.openDevTools()
 
   mainWindow.on('closed', function() {
     mainWindow = null
