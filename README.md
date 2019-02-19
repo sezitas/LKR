@@ -1,3 +1,4 @@
 # license-key-reader_photon
 
-<img src='src/screenshot.png' alt='License Key Reader' />
+![Main Window](res/screenshot.png?raw=true "License Key Reader")
+<!-- <img src='src/screenshot.png' alt='License Key Reader' /> -->
