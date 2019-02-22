@@ -14,25 +14,33 @@
     tr td {
       white-space: nowrap;
     }
+
     tr th {
       white-space: nowrap;
     }
   </style>
   <!-- Javascript -->
   <script src="js/menu.js" charset="utf-8"></script>
+  <script>window.$ = window.jQuery = require('jquery');</script>
+  <script>
+    $(document).ready(function () {
+      $("#license-search").on("keyup", function () {
+        var value = $(this).val().toLowerCase();
+        $("#license-table tbody tr").filter(function () {
+          $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+      });
+    });
+  </script>
 </head>
 
 <body>
-  <!-- .toolbar-header sits at the top of your app -->
-  <!-- <header class="toolbar toolbar-header">
-      <h1 class="title">License</h1>
-    </header> -->
 
   <div class="container mt-2">
     <div class="row lg-6">
       <div class="col lg-6">
         <div class="input-group mb-3">
-          <input type="text" class="form-control" placeholder="Search" aria-label="Search"
+          <input id="license-search" type="text" class="form-control" placeholder="Search" aria-label="Search"
             aria-describedby="basic-addon2">
           <div class="input-group-append">
             <button class="btn btn-dark" id="loadButton">Load</button>
@@ -48,7 +56,6 @@
       </table>
     </div>
   </div>
-
 
   <script>require('./js/controller')</script>
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"

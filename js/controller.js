@@ -4,7 +4,7 @@ const LicenceList = require('./licenceList');
 var myLicences = null;
 
 document.getElementById('loadButton').addEventListener('click', _ => {
-  getLicences('./res/licenceKeyLog.txt', './res/adapters.txt');
+  getLicences('./res/LicenseKeyLog.txt', './res/adapters.txt');
 })
 
 function insertTh(row, value, size) {
