@@ -5,16 +5,16 @@ const { Menu, MenuItem } = remote
 var menu = new Menu()
 menu.append(new MenuItem({
   label: 'Delete',
-  click: function() {
+  click: function () {
     // Trigger an alert when menu item is clicked
-    alert('Deleted')
+    console.alert('Deleted')
   }
 }))
 menu.append(new MenuItem({
   label: 'More Info...',
-  click: function() {
+  click: function () {
     // Trigger an alert when menu item is clicked
-    alert('Here is more information')
+    console.alert('Here is more information')
   }
 }))
 
@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   Array.prototype.forEach.call(nodeList, function (item) {
     item.addEventListener('contextmenu', function (event) {
-      menu.popup(remote.getCurrentWindow());
+      menu.popup(remote.getCurrentWindow())
     })
   })
 })

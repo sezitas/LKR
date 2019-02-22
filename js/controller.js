@@ -1,33 +1,33 @@
 window.$ = window.jQuery = require('jquery')
 window.Tether = require('popper.js')
 window.Bootstrap = require('bootstrap')
-const LicenceList = require('./licenceList');
+const LicenceList = require('./licenceList')
 
-var myLicences = null;
+var myLicences = null
 
 document.getElementById('loadButton').addEventListener('click', _ => {
-  getLicences('./res/LicenseKeyLog.txt', './res/adapters.txt');
+  getLicences('./res/LicenseKeyLog.txt', './res/adapters.txt')
   // getLicences('//vms2/FileShare/MC/KeyGenerator/LicenseKeyLog.txt', './res/adapters.txt');
 })
 
-function insertTh(row, value, size) {
+function insertTh (row, value, size) {
   var cell = document.createElement('th')
   cell.innerHTML = value
   row.appendChild(cell)
 }
 
-function insertTd(row, value, size) {
+function insertTd (row, value, size) {
   var cell = document.createElement('td')
   cell.innerHTML = value
   row.appendChild(cell)
 }
 
-function loadTable() {
+function loadTable () {
   let licenseTable = document.getElementById('license-table')
-  licenseTable.innerHTML = ""
+  licenseTable.innerHTML = ''
 
   let head = document.createElement('thead')
-  head.classList.add('thead-dark');
+  head.classList.add('thead-dark')
   let row = document.createElement('tr')
   insertTh(row, 'Client', 2)
   insertTh(row, 'Ver', 1)
@@ -55,14 +55,14 @@ function loadTable() {
   licenseTable.appendChild(body)
 }
 
-function logData() {
+function logData () {
   console.log(myLicences)
   myLicences.adapters.forEach((adapter) => {
     console.log(adapter.name + ': ' + adapter.isInLicence)
   })
 }
 
-function getLicences(licenceFile, adaptersFile) {
+function getLicences (licenceFile, adaptersFile) {
   myLicences = new LicenceList()
   myLicences.loadAdapters(adaptersFile)
   myLicences.loadLicences(licenceFile, loadTable)

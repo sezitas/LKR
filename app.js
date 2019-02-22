@@ -2,13 +2,13 @@ const { app, BrowserWindow } = require('electron')
 var mainWindow = null
 
 // Quit when all windows are closed.
-app.on('window-all-closed', function() {
+app.on('window-all-closed', function () {
   if (process.platform != 'darwin') {
     app.quit();
   }
 });
 
-app.on('ready', function() {
+app.on('ready', function () {
 
   mainWindow = new BrowserWindow({
     width: 1500,
@@ -25,7 +25,7 @@ app.on('ready', function() {
   mainWindow.loadURL('file://' + __dirname + '/index.html')
   mainWindow.openDevTools()
 
-  mainWindow.on('closed', function() {
+  mainWindow.on('closed', function () {
     mainWindow = null
   });
 
