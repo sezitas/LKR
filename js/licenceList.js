@@ -15,13 +15,14 @@ class LicenceItem {
 class Adapter {
     constructor(line) {
         let temp = line.split("|")
-        this.adapterName = temp[0],
-            this.adapterID = temp[1]
-        this.isInLicence = false;
+        this.name = temp[0]
+        this.adapterID = temp[1]
+        this.isInLicence = false
     }
 
-    checkLicence(LicenseCode) {
-        this.isInLicence = (adapterID & code != 0) ? true : false
+    checkLicence(licenseCode, done) {
+        this.isInLicence = (this.adapterID & licenseCode != 0) ? true : false
+        done()
     }
 }
 
@@ -69,6 +70,16 @@ class LicenceList {
         rl.on('close', _ => {
             this.adapters = data
             updated()
+        })
+    }
+
+    checkAdapters(licenseCode, updated) {
+        this.adapters.forEach((adapter, index, array) => {
+            adapter.checkLicence(licenseCode, _ => {
+                if (index === array.length) {
+                    updated();
+                }
+            })
         })
     }
 }
