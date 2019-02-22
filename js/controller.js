@@ -10,37 +10,36 @@ document.getElementById('loadButton').addEventListener('click', _ => {
   // getLicences('//vms2/FileShare/MC/KeyGenerator/LicenseKeyLog.txt', './res/adapters.txt');
 })
 
-function insertTh (row, value, size) {
+function insertTh (row, value) {
   var cell = document.createElement('th')
   cell.innerHTML = value
   row.appendChild(cell)
 }
 
-function insertTd (row, value, size) {
+function insertTd (row, value) {
   var cell = document.createElement('td')
   cell.innerHTML = value
   row.appendChild(cell)
 }
 
-function loadTable () {
+function loadLicenseTable () {
   let licenseTable = document.getElementById('license-table')
   licenseTable.innerHTML = ''
 
   let head = document.createElement('thead')
   head.classList.add('thead-dark')
   let row = document.createElement('tr')
-  insertTh(row, 'Client', 2)
-  insertTh(row, 'Ver', 1)
-  insertTh(row, 'Start Date', 2)
-  insertTh(row, 'End Date', 2)
-  insertTh(row, 'Adapter ID', 1)
-  // insertTh(row, 'idk', 0)
-  insertTh(row, 'License Key', 4)
+  insertTh(row, 'Client')
+  insertTh(row, 'Ver')
+  insertTh(row, 'Start Date')
+  insertTh(row, 'End Date')
+  insertTh(row, 'Adapter ID')
+  // insertTh(row, 'idk')
+  insertTh(row, 'License Key')
   head.appendChild(row)
   licenseTable.appendChild(head)
 
   let body = document.createElement('tbody')
-  licenseTable.appendChild(document.createElement('tbody'))
   myLicences.licences.forEach((licence, index) => {
     let row = document.createElement('tr')
     insertTd(row, licence.companyName, 2)
@@ -55,6 +54,10 @@ function loadTable () {
   licenseTable.appendChild(body)
 }
 
+function loadAdapterTable () {
+  let adapterTBody = document.getElementById('adapter-tbody')
+}
+
 function logData () {
   console.log(myLicences)
   myLicences.adapters.forEach((adapter) => {
@@ -64,8 +67,8 @@ function logData () {
 
 function getLicences (licenceFile, adaptersFile) {
   myLicences = new LicenceList()
-  myLicences.loadAdapters(adaptersFile)
-  myLicences.loadLicences(licenceFile, loadTable)
+  myLicences.loadLicences(licenceFile, loadLicenseTable)
+  myLicences.loadAdapters(adaptersFile, loadAdapterTable)
 
   myLicences.checkAdapters('256', logData)
 

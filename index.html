@@ -13,13 +13,11 @@
 </head>
 
 <body>
-
-  <div class="container mt-2">
-    <div class="row lg-6">
-      <div class="col lg-6">
-        <div class="input-group mb-3">
-          <input id="license-search" type="text" class="form-control" placeholder="Search" aria-label="Search"
-            aria-describedby="basic-addon2">
+  <div class="container-fluid my-2 mx-2">
+    <div class="row">
+      <div class="col">
+        <div class="input-group">
+          <input id="license-search" type="text" class="form-control" placeholder="Search" aria-label="Search">
           <div class="input-group-append">
             <button class="btn btn-dark" id="loadButton">Load</button>
           </div>
@@ -28,10 +26,30 @@
     </div>
   </div>
 
-  <div class="mx-4">
-    <div class="table-responsive">
-      <table class="table table-sm table-bordered table-hover" id="license-table">
-      </table>
+  <div class="container-fluid mx-2 d-flex align-items-stretch">
+    <div class="row px-2">
+      <div class="col-lg-2 px-0 d-flex align-items-stretch">
+        <table class="table table-sm table-bordered" id="adapter-table">
+          <thead class="thead-dark">
+            <tr>
+              <td>Adapter Name</td>
+              <td>Active</td>
+            </tr>
+          </thead>
+          <tbody id="adapter-tbody">
+
+          </tbody>
+        </table>
+      </div>
+      <div class="col-lg-10 px-1 d-flex align-items-stretch">
+        <div class="container-fluid px-0">
+          <div class="table-responsive px-0">
+            <!-- // TABLE HERE -->
+            <table class="table table-sm table-bordered table-hover" id="license-table">
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
