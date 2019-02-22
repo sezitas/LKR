@@ -1,9 +1,9 @@
 {
-  "name": "proton-template-app",
+  "name": "lkt",
   "version": "1.0.0",
-  "description": "A simple template app for Proton",
+  "description": "License Key Reader for Me",
   "main": "app.js",
-  "author": "Connor Sears",
+  "author": "sezitas",
   "scripts": {
     "start": "electron ."
   },
@@ -14,5 +14,14 @@
   },
   "dependencies": {
     "bootstrap": "^4.3.1"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sezitas/LKR.git"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sezitas/LKR/issues"
+  },
+  "homepage": "https://github.com/sezitas/LKR#readme"
 }
