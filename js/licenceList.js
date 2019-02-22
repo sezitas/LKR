@@ -27,7 +27,7 @@ class Adapter {
 }
 
 class LicenceList {
-    constructor(change) {
+    constructor() {
         this.listHeaders = ['Client', 'Ver', 'Start', 'End', 'Adapter ID', 'idk', 'License Key']
         this.licences = []
         this.adapters = []
@@ -49,7 +49,9 @@ class LicenceList {
 
         rl.on('close', () => {
             this.licences = data
-            updated()
+            if (typeof (updated) === 'function') {
+                updated();
+            }
         })
     }
 
@@ -69,18 +71,23 @@ class LicenceList {
 
         rl.on('close', _ => {
             this.adapters = data
-            updated()
+            if (typeof (updated) === 'function') {
+                updated();
+            }
         })
     }
 
     checkAdapters(licenseCode, updated) {
-        this.adapters.forEach((adapter, index, array) => {
-            adapter.checkLicence(licenseCode, _ => {
-                if (index === array.length) {
-                    updated();
+        var len = this.adapters.length
+        for (var i = 0; i < len; i++) {
+            this.adapters[i].checkLicence(licenseCode, _ => {
+                if (i === len - 1) {
+                    if (typeof (updated) === 'function') {
+                        updated();
+                    }
                 }
             })
-        })
+        }
     }
 }
 

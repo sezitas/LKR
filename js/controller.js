@@ -1,11 +1,13 @@
-const { electron } = require('electron')
+window.$ = window.jQuery = require('jquery')
+window.Tether = require('popper.js')
+window.Bootstrap = require('bootstrap')
 const LicenceList = require('./licenceList');
 
 var myLicences = null;
 
 document.getElementById('loadButton').addEventListener('click', _ => {
-  // getLicences('./res/LicenseKeyLog.txt', './res/adapters.txt');
-  getLicences('//vms2/FileShare/MC/KeyGenerator/LicenseKeyLog.txt', './res/adapters.txt');
+  getLicences('./res/LicenseKeyLog.txt', './res/adapters.txt');
+  // getLicences('//vms2/FileShare/MC/KeyGenerator/LicenseKeyLog.txt', './res/adapters.txt');
 })
 
 function insertTh(row, value, size) {
@@ -21,7 +23,6 @@ function insertTd(row, value, size) {
 }
 
 function loadTable() {
-  let rowCursor = 0
   let licenseTable = document.getElementById('license-table')
   licenseTable.innerHTML = ""
 
@@ -50,30 +51,25 @@ function loadTable() {
     // insertTd(row, licence.idkWhatThisis, 0)
     insertTd(row, licence.licence, 4)
     body.appendChild(row)
-    // myLicences.adapters[8].checkLicence('256')
-    // setTimeout(_ => {
-    //   console.log('license ' + index + ': ' + myLicences.adapters[8].isInLicence)
-    // }, 500)
   })
   licenseTable.appendChild(body)
 }
 
-function logAdapters() {
+function logData() {
+  console.log(myLicences)
   myLicences.adapters.forEach((adapter) => {
     console.log(adapter.name + ': ' + adapter.isInLicence)
   })
 }
 
-
 function getLicences(licenceFile, adaptersFile) {
-  myLicences = new LicenceList(loadTable)
-  myLicences.loadAdapters(adaptersFile, _ => {
-    myLicences.loadLicences(licenceFile, loadTable)
-  })
-  myLicences.checkAdapters('256', logAdapters)
+  myLicences = new LicenceList()
+  myLicences.loadAdapters(adaptersFile)
+  myLicences.loadLicences(licenceFile, loadTable)
+
+  myLicences.checkAdapters('256', logData)
+
   setTimeout(_ => {
-    console.log(myLicences)
+    logData()
   }, 500)
 }
-
-
