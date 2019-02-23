@@ -20,7 +20,8 @@ class Adapter {
   }
 
   checkLicence (licenseCode, done) {
-    this.isInLicence = !!((this.adapterID & licenseCode !== 0))
+    this.isInLicence = !!((this.adapterID & licenseCode != 0))
+    console.log(licenseCode)
     done()
   }
 }

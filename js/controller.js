@@ -4,8 +4,10 @@ window.Bootstrap = require('bootstrap')
 const LicenceList = require('./licenceList')
 
 var myLicences = null
+var licenseTable = document.getElementById('license-table')
 
-document.getElementById('loadButton').addEventListener('click', _ => {
+var loadButton = document.getElementById('loadButton')
+loadButton.addEventListener('click', _ => {
   getLicences('./res/LicenseKeyLog.txt', './res/adapters.txt')
   // getLicences('//vms2/FileShare/MC/KeyGenerator/LicenseKeyLog.txt', './res/adapters.txt');
 })
@@ -22,8 +24,8 @@ function insertTd (row, value) {
   row.appendChild(cell)
 }
 
+
 function loadLicenseTable () {
-  let licenseTable = document.getElementById('license-table')
   licenseTable.innerHTML = ''
 
   let head = document.createElement('thead')
@@ -52,6 +54,17 @@ function loadLicenseTable () {
     body.appendChild(row)
   })
   licenseTable.appendChild(body)
+
+  var rows = body.getElementsByTagName('tr')
+  for (let i = 0; i < rows.length; i++) {
+    rows[i].addEventListener('click', (e) => {
+      let adapterID = e.path[1].cells[4].innerHTML
+      // myLicences.adapters[2].checkLicence(adapterID, loadAdapterTable)
+      myLicences.checkAdapters(adapterID, loadAdapterTable)
+      // console.log(e)
+      // console.log(adapterID)
+    })
+  }
 }
 
 function loadAdapterTable () {
@@ -66,20 +79,14 @@ function loadAdapterTable () {
 }
 
 function logData () {
-  // console.log(myLicences)
-  myLicences.adapters.forEach((adapter) => {
-    console.log(adapter.name + ': ' + adapter.isInLicence)
-  })
+  console.log(myLicences)
+  // myLicences.adapters.forEach((adapter) => {
+  //   console.log(adapter.name + ': ' + adapter.isInLicence)
+  // })
 }
 
 function getLicences (licenceFile, adaptersFile) {
   myLicences = new LicenceList()
   myLicences.loadLicences(licenceFile, loadLicenseTable)
   myLicences.loadAdapters(adaptersFile, loadAdapterTable)
-
-  myLicences.checkAdapters('256', logData)
-
-  setTimeout(_ => {
-    logData()
-  }, 500)
 }
