@@ -20,19 +20,18 @@ class Adapter {
   }
 
   checkLicence (licenseCode, done) {
-    this.isInLicence = !!((this.adapterID & licenseCode != 0))
-    console.log(licenseCode)
+    this.isInLicence = !!((parseInt(this.adapterID) & parseInt(licenseCode)) !== 0)
     done()
   }
 }
 
 class LicenceList {
   constructor () {
-    this.listHeaders = ['Client', 'Ver', 'Start', 'End', 'Adapter ID', 'idk', 'License Key']
     this.licences = []
     this.adapters = []
   }
 
+  // loadLicenses & loadAdapters need refactoring cause duplicate code
   loadLicences (fileName, updated) {
     let data = []
     const fs = require('fs')
@@ -47,7 +46,7 @@ class LicenceList {
       data.push(new LicenceItem(line))
     })
 
-    rl.on('close', () => {
+    rl.on('close', _ => {
       this.licences = data
       if (typeof (updated) === 'function') {
         updated()
@@ -81,10 +80,8 @@ class LicenceList {
     var len = this.adapters.length
     for (var i = 0; i < len; i++) {
       this.adapters[i].checkLicence(licenseCode, _ => {
-        if (i === len - 1) {
-          if (typeof (updated) === 'function') {
-            updated()
-          }
+        if ((i === len - 1) & (typeof (updated) === 'function')) {
+          updated()
         }
       })
     }

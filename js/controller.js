@@ -4,7 +4,8 @@ window.Bootstrap = require('bootstrap')
 const LicenceList = require('./licenceList')
 
 var myLicences = null
-var licenseTable = document.getElementById('license-table')
+var tBody = document.getElementById('license-tbody')
+var aBody = document.getElementById('adapter-tbody')
 
 var loadButton = document.getElementById('loadButton')
 loadButton.addEventListener('click', _ => {
@@ -12,36 +13,20 @@ loadButton.addEventListener('click', _ => {
   // getLicences('//vms2/FileShare/MC/KeyGenerator/LicenseKeyLog.txt', './res/adapters.txt');
 })
 
-function insertTh (row, value) {
-  var cell = document.createElement('th')
-  cell.innerHTML = value
-  row.appendChild(cell)
+function licenseSelected (e) {
+  let adapterID = e.path[1].cells[4].innerHTML
+  myLicences.checkAdapters(adapterID, loadAdapterTable)
 }
 
 function insertTd (row, value) {
   var cell = document.createElement('td')
   cell.innerHTML = value
   row.appendChild(cell)
+  return cell
 }
 
-
 function loadLicenseTable () {
-  licenseTable.innerHTML = ''
-
-  let head = document.createElement('thead')
-  head.classList.add('thead-dark')
-  let row = document.createElement('tr')
-  insertTh(row, 'Client')
-  insertTh(row, 'Ver')
-  insertTh(row, 'Start Date')
-  insertTh(row, 'End Date')
-  insertTh(row, 'Adapter ID')
-  // insertTh(row, 'idk')
-  insertTh(row, 'License Key')
-  head.appendChild(row)
-  licenseTable.appendChild(head)
-
-  let body = document.createElement('tbody')
+  tBody.innerHTML = ''
   myLicences.licences.forEach((licence, index) => {
     let row = document.createElement('tr')
     insertTd(row, licence.companyName)
@@ -49,40 +34,28 @@ function loadLicenseTable () {
     insertTd(row, licence.beginDate)
     insertTd(row, licence.endDate)
     insertTd(row, licence.adapters)
-    // insertTd(row, licence.idkWhatThisis)
     insertTd(row, licence.licence)
-    body.appendChild(row)
+    row.classList.add('text-nowrap')
+    row.addEventListener('click', licenseSelected)
+    tBody.appendChild(row)
   })
-  licenseTable.appendChild(body)
-
-  var rows = body.getElementsByTagName('tr')
-  for (let i = 0; i < rows.length; i++) {
-    rows[i].addEventListener('click', (e) => {
-      let adapterID = e.path[1].cells[4].innerHTML
-      // myLicences.adapters[2].checkLicence(adapterID, loadAdapterTable)
-      myLicences.checkAdapters(adapterID, loadAdapterTable)
-      // console.log(e)
-      // console.log(adapterID)
-    })
-  }
 }
 
 function loadAdapterTable () {
-  let aBody = document.getElementById('adapter-tbody')
   aBody.innerHTML = ''
   myLicences.adapters.forEach((adapter) => {
     let row = document.createElement('tr')
     insertTd(row, adapter.name)
-    insertTd(row, adapter.isInLicence)
+    let td = insertTd(row, adapter.isInLicence)
+    if (td.innerHTML === 'true') {
+      row.classList.add('text-center', 'text-nowrap')
+      // row.classList.add('bg-success', 'text-white', 'text-center')
+    } else {
+      row.classList.add('d-none')
+      // row.classList.add('bg-white', 'text-dark', 'text-center')
+    }
     aBody.appendChild(row)
   })
-}
-
-function logData () {
-  console.log(myLicences)
-  // myLicences.adapters.forEach((adapter) => {
-  //   console.log(adapter.name + ': ' + adapter.isInLicence)
-  // })
 }
 
 function getLicences (licenceFile, adaptersFile) {

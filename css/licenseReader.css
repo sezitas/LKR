@@ -1,7 +1,3 @@
-tr td {
-  white-space: nowrap;
-}
-
-tr th {
-  white-space: nowrap;
+table {
+  font-size: 13px;
 }
