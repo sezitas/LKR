@@ -1,21 +1,21 @@
 window.$ = window.jQuery = require('jquery')
 window.Tether = require('popper.js')
 window.Bootstrap = require('bootstrap')
-const LicenceList = require('./licenceList')
+const LicenseList = require('./licenseList')
 
-var myLicences = null
+var myLicenses = null
 var tBody = document.getElementById('license-tbody')
 var aBody = document.getElementById('adapter-tbody')
 
 var loadButton = document.getElementById('loadButton')
 loadButton.addEventListener('click', _ => {
-  getLicences('./res/LicenseKeyLog.txt', './res/adapters.txt')
-  // getLicences('//vms2/FileShare/MC/KeyGenerator/LicenseKeyLog.txt', './res/adapters.txt');
+  getLicenses('./res/LicenseKeyLog.txt', './res/adapters.txt')
+  // getLicenses('//vms2/FileShare/MC/KeyGenerator/LicenseKeyLog.txt', './res/adapters.txt');
 })
 
 function licenseSelected (e) {
   let adapterID = e.path[1].cells[4].innerHTML
-  myLicences.checkAdapters(adapterID, loadAdapterTable)
+  myLicenses.checkAdapters(adapterID, updateAdapterTable)
 }
 
 function insertTd (row, value) {
@@ -25,28 +25,28 @@ function insertTd (row, value) {
   return cell
 }
 
-function loadLicenseTable () {
+function updateLicenseTable () {
   tBody.innerHTML = ''
-  myLicences.licences.forEach((licence, index) => {
+  myLicenses.licenses.forEach((licence, index) => {
     let row = document.createElement('tr')
     insertTd(row, licence.companyName)
     insertTd(row, licence.version)
     insertTd(row, licence.beginDate)
     insertTd(row, licence.endDate)
     insertTd(row, licence.adapters)
-    insertTd(row, licence.licence)
+    insertTd(row, licence.license)
     row.classList.add('text-nowrap')
     row.addEventListener('click', licenseSelected)
     tBody.appendChild(row)
   })
 }
 
-function loadAdapterTable () {
+function updateAdapterTable () {
   aBody.innerHTML = ''
-  myLicences.adapters.forEach((adapter) => {
+  myLicenses.adapters.forEach((adapter) => {
     let row = document.createElement('tr')
     insertTd(row, adapter.name)
-    let td = insertTd(row, adapter.isInLicence)
+    let td = insertTd(row, adapter.isInLicense)
     if (td.innerHTML === 'true') {
       row.classList.add('text-center', 'text-nowrap')
       // row.classList.add('bg-success', 'text-white', 'text-center')
@@ -58,8 +58,10 @@ function loadAdapterTable () {
   })
 }
 
-function getLicences (licenceFile, adaptersFile) {
-  myLicences = new LicenceList()
-  myLicences.loadLicences(licenceFile, loadLicenseTable)
-  myLicences.loadAdapters(adaptersFile, loadAdapterTable)
+function getLicenses (licensesFile, adaptersFile) {
+  myLicenses = new LicenseList()
+  myLicenses.licenseUpdated = updateLicenseTable
+  myLicenses.adapterUpdated = updateAdapterTable
+  myLicenses.loadLicenses(licensesFile)
+  myLicenses.loadAdapters(adaptersFile)
 }
