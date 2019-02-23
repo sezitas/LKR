@@ -42,24 +42,31 @@ function loadLicenseTable () {
   let body = document.createElement('tbody')
   myLicences.licences.forEach((licence, index) => {
     let row = document.createElement('tr')
-    insertTd(row, licence.companyName, 2)
-    insertTd(row, licence.version, 1)
-    insertTd(row, licence.beginDate, 2)
-    insertTd(row, licence.endDate, 2)
-    insertTd(row, licence.adapters, 1)
-    // insertTd(row, licence.idkWhatThisis, 0)
-    insertTd(row, licence.licence, 4)
+    insertTd(row, licence.companyName)
+    insertTd(row, licence.version)
+    insertTd(row, licence.beginDate)
+    insertTd(row, licence.endDate)
+    insertTd(row, licence.adapters)
+    // insertTd(row, licence.idkWhatThisis)
+    insertTd(row, licence.licence)
     body.appendChild(row)
   })
   licenseTable.appendChild(body)
 }
 
 function loadAdapterTable () {
-  let adapterTBody = document.getElementById('adapter-tbody')
+  let aBody = document.getElementById('adapter-tbody')
+  aBody.innerHTML = ''
+  myLicences.adapters.forEach((adapter) => {
+    let row = document.createElement('tr')
+    insertTd(row, adapter.name)
+    insertTd(row, adapter.isInLicence)
+    aBody.appendChild(row)
+  })
 }
 
 function logData () {
-  console.log(myLicences)
+  // console.log(myLicences)
   myLicences.adapters.forEach((adapter) => {
     console.log(adapter.name + ': ' + adapter.isInLicence)
   })
