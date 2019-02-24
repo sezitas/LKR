@@ -1,21 +1,28 @@
 window.$ = window.jQuery = require('jquery')
 window.Tether = require('popper.js')
 window.Bootstrap = require('bootstrap')
-const LicenseList = require('./licenseList')
+const Model = require('./licenseList')
 
-var myLicenses = null
-var tBody = document.getElementById('license-tbody')
-var aBody = document.getElementById('adapter-tbody')
+// var myLicenses = null
+var licenseArray = null
+var adapterArray = null
+const tBody = document.getElementById('license-tbody')
+const aBody = document.getElementById('adapter-tbody')
 
 var loadButton = document.getElementById('loadButton')
 loadButton.addEventListener('click', _ => {
-  getLicenses('./res/LicenseKeyLog.txt', './res/adapters.txt')
+  getLicenses('./res/LicenseKeyLog.txt')
+  getAdapters('./res/adapters.txt')
   // getLicenses('//vms2/FileShare/MC/KeyGenerator/LicenseKeyLog.txt', './res/adapters.txt');
 })
 
 function licenseSelected (e) {
   let adapterID = e.path[1].cells[4].innerHTML
-  myLicenses.checkAdapters(adapterID, updateAdapterTable)
+  Model.checkAdapters(adapterID, adapterArray)
+    .then((data) => {
+      adapterArray = data
+      updateAdapterTable()
+    })
 }
 
 function insertTd (row, value) {
@@ -27,14 +34,14 @@ function insertTd (row, value) {
 
 function updateLicenseTable () {
   tBody.innerHTML = ''
-  myLicenses.licenses.forEach((licence, index) => {
+  licenseArray.forEach((license, index) => {
     let row = document.createElement('tr')
-    insertTd(row, licence.companyName)
-    insertTd(row, licence.version)
-    insertTd(row, licence.beginDate)
-    insertTd(row, licence.endDate)
-    insertTd(row, licence.adapters)
-    insertTd(row, licence.license)
+    insertTd(row, license.companyName)
+    insertTd(row, license.version)
+    insertTd(row, license.beginDate)
+    insertTd(row, license.endDate)
+    insertTd(row, license.adapters)
+    insertTd(row, license.license)
     row.classList.add('text-nowrap')
     row.addEventListener('click', licenseSelected)
     tBody.appendChild(row)
@@ -43,7 +50,7 @@ function updateLicenseTable () {
 
 function updateAdapterTable () {
   aBody.innerHTML = ''
-  myLicenses.adapters.forEach((adapter) => {
+  adapterArray.forEach((adapter) => {
     let row = document.createElement('tr')
     insertTd(row, adapter.name)
     let td = insertTd(row, adapter.isInLicense)
@@ -58,10 +65,24 @@ function updateAdapterTable () {
   })
 }
 
-function getLicenses (licensesFile, adaptersFile) {
-  myLicenses = new LicenseList()
-  myLicenses.licenseUpdated = updateLicenseTable
-  myLicenses.adapterUpdated = updateAdapterTable
-  myLicenses.loadLicenses(licensesFile)
-  myLicenses.loadAdapters(adaptersFile)
+function getAdapters (file) {
+  Model.willLoadAdapters(file)
+    .then((data) => {
+      adapterArray = data
+      updateAdapterTable()
+    })
+    .catch((err) => {
+      console.log('getAdapters: ' + err.message)
+    })
+}
+
+function getLicenses (file) {
+  Model.willLoadLicenses(file)
+    .then((data) => {
+      licenseArray = data
+      updateLicenseTable()
+    })
+    .catch((err) => {
+      console.log('getLicenses: ', err.message)
+    })
 }

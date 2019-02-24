@@ -1,19 +1,23 @@
 {
   "name": "lkt",
+  "productName": "LicenseKey Reader",
   "version": "1.0.0",
-  "description": "License Key Reader for Me",
+  "description": "Reader app for reading some licensekeys from a file",
   "main": "app.js",
   "author": "sezitas",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "package": "electron-packager ."
   },
   "dependencies": {
     "bootstrap": "^4.3.1",
-    "electron": "^4.0.5",
     "jquery": "^3.3.1",
+    "nedb": "^1.8.0",
     "popper.js": "^1.14.7"
   },
   "devDependencies": {
+    "electron": "^4.0.5",
+    "electron-packager": "^13.1.0",
     "eslint": "^5.14.1",
     "eslint-config-standard": "^12.0.0",
     "eslint-plugin-import": "^2.16.0",
