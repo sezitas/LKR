@@ -1,13 +1,13 @@
 {
   "name": "lkt",
-  "productName": "LicenseKey Reader",
+  "productName": "MC-LKR",
   "version": "1.0.0",
   "description": "Reader app for reading some licensekeys from a file",
   "main": "app.js",
   "author": "sezitas",
   "scripts": {
     "start": "electron .",
-    "package": "electron-packager ."
+    "package": "electron-packager . --overwrite"
   },
   "dependencies": {
     "bootstrap": "^4.3.1",

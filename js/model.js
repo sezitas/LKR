@@ -14,10 +14,20 @@ function Adapter (line) {
   this.name = temp[0]
   this.adapterID = temp[1]
   this.isInLicense = false
-  this.checkLicense = (code, done) => {
+  this.checkLicense = (code) => {
     this.isInLicense = !!((parseInt(this.adapterID) & parseInt(code)) !== 0)
-    done()
   }
+}
+
+function checkAdapters (licenseCode, data) {
+  return new Promise((resolve, reject) => {
+    data.map((e, i, arr) => {
+      e.checkLicense(licenseCode)
+      if (i === arr.length - 1) {
+        resolve(data)
+      }
+    })
+  })
 }
 
 function isValidAdapterLine (line) {
@@ -56,19 +66,10 @@ function willLoadAdapters (file) {
         reject(Error('Invalid adapter format at line: ' + lineCount))
       }
     })
-  })
-}
 
-function checkAdapters (licenseCode, data) {
-  return new Promise((resolve, reject) => {
-    var len = data.length
-    for (var i = 0; i < len; i++) {
-      data[i].checkLicense(licenseCode, _ => {
-        if (i === len - 1) {
-          resolve(data)
-        }
-      })
-    }
+    readStream.on('error', (err) => {
+      reject(err)
+    })
   })
 }
 
@@ -109,11 +110,15 @@ function willLoadLicenses (file) {
       }
       return data
     })
+
+    readStream.on('error', (err) => {
+      reject(err)
+    })
   })
 }
 
 module.exports = {
-  willLoadAdapters: willLoadAdapters,
-  willLoadLicenses: willLoadLicenses,
-  checkAdapters: checkAdapters
+  willLoadAdapters,
+  willLoadLicenses,
+  checkAdapters
 }

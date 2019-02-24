@@ -1,6 +1,3 @@
-window.$ = window.jQuery = require('jquery')
-window.Tether = require('popper.js')
-window.Bootstrap = require('bootstrap')
 const Model = require('./model')
 
 var licenseArray = null

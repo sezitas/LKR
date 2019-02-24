@@ -39,7 +39,7 @@ app.on('ready', _ => {
   })
 
   mainWindow.loadURL(path.join('file://', __dirname, '/index.html'))
-  mainWindow.openDevTools()
+  // mainWindow.openDevTools()
 
   mainWindow.on('closed', _ => {
     mainWindow = null
