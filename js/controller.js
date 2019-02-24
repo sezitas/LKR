@@ -9,12 +9,23 @@ var adapterArray = null
 const tBody = document.getElementById('license-tbody')
 const aBody = document.getElementById('adapter-tbody')
 
-var loadButton = document.getElementById('loadButton')
+const errorArea = document.getElementById('errorArea')
+const loadButton = document.getElementById('loadButton')
 loadButton.addEventListener('click', _ => {
+  hideErrorArea()
   getLicenses('./res/LicenseKeyLog.txt')
   getAdapters('./res/adapters.txt')
   // getLicenses('//vms2/FileShare/MC/KeyGenerator/LicenseKeyLog.txt', './res/adapters.txt');
 })
+
+function setErrorArea (msg) {
+  errorArea.innerHTML = msg
+  errorArea.classList.remove('d-none')
+}
+
+function hideErrorArea () {
+  errorArea.classList.add('d-none')
+}
 
 function licenseSelected (e) {
   let adapterID = e.path[1].cells[4].innerHTML
@@ -72,7 +83,7 @@ function getAdapters (file) {
       updateAdapterTable()
     })
     .catch((err) => {
-      console.log('getAdapters: ' + err.message)
+      setErrorArea(err.message)
     })
 }
 
@@ -83,6 +94,6 @@ function getLicenses (file) {
       updateLicenseTable()
     })
     .catch((err) => {
-      console.log('getLicenses: ', err.message)
+      setErrorArea(err.message)
     })
 }
