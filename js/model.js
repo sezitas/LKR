@@ -20,13 +20,6 @@ function Adapter (line) {
   }
 }
 
-function LicenseList (licUpdate, adpUpdate) {
-  this.licenses = []
-  this.adapters = []
-  this.licenseUpdated = licUpdate
-  this.adapterUpdated = adpUpdate
-}
-
 function isValidAdapterLine (line) {
   const patt = /^.*\|\d*$/
   return patt.test(line)

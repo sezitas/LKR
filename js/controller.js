@@ -1,9 +1,8 @@
 window.$ = window.jQuery = require('jquery')
 window.Tether = require('popper.js')
 window.Bootstrap = require('bootstrap')
-const Model = require('./licenseList')
+const Model = require('./model')
 
-// var myLicenses = null
 var licenseArray = null
 var adapterArray = null
 const tBody = document.getElementById('license-tbody')
@@ -76,24 +75,20 @@ function updateAdapterTable () {
   })
 }
 
-function getAdapters (file) {
-  Model.willLoadAdapters(file)
-    .then((data) => {
-      adapterArray = data
-      updateAdapterTable()
-    })
-    .catch((err) => {
-      setErrorArea(err.message)
-    })
+async function getAdapters (file) {
+  try {
+    adapterArray = await Model.willLoadAdapters(file)
+    updateAdapterTable()
+  } catch (err) {
+    setErrorArea(err.message)
+  }
 }
 
-function getLicenses (file) {
-  Model.willLoadLicenses(file)
-    .then((data) => {
-      licenseArray = data
-      updateLicenseTable()
-    })
-    .catch((err) => {
-      setErrorArea(err.message)
-    })
+async function getLicenses (file) {
+  try {
+    licenseArray = await Model.willLoadLicenses(file)
+    updateLicenseTable()
+  } catch (err) {
+    setErrorArea(err.message)
+  }
 }
