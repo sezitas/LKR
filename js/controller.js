@@ -1,18 +1,61 @@
+const { ipcRenderer } = require('electron')
 const Model = require('./model')
 
+var SETTINGS = null
 var licenseArray = null
 var adapterArray = null
 const tBody = document.getElementById('license-tbody')
 const aBody = document.getElementById('adapter-tbody')
 
 const errorArea = document.getElementById('errorArea')
-const loadButton = document.getElementById('loadButton')
-loadButton.addEventListener('click', _ => {
-  hideErrorArea()
-  getLicenses('./res/LicenseKeyLog.txt')
-  getAdapters('./res/adapters.txt')
-  // getLicenses('//vms2/FileShare/MC/KeyGenerator/LicenseKeyLog.txt', './res/adapters.txt');
+const loadLicensesButton = document.getElementById('loadLicensesButton')
+loadLicensesButton.addEventListener('click', _ => {
+  ipcRenderer.send('open-license-file', SETTINGS.licensePath)
 })
+const loadAdaptersButton = document.getElementById('loadAdaptersButton')
+loadAdaptersButton.addEventListener('click', _ => {
+  ipcRenderer.send('open-adapter-file', SETTINGS.adapterPath)
+})
+
+init()
+
+ipcRenderer.on('selected-license-file', (event, path) => {
+  hideErrorArea()
+  SETTINGS.licensePath = path
+  getLicenses(SETTINGS.licensePath)
+  saveSettings()
+})
+
+ipcRenderer.on('selected-adapter-file', (event, path) => {
+  hideErrorArea()
+  SETTINGS.adapterPath = path
+  getAdapters(SETTINGS.adapterPath)
+  saveSettings()
+})
+
+function init () {
+  loadSettings()
+  getLicenses(SETTINGS.licensePath)
+  getAdapters(SETTINGS.adapterPath)
+}
+
+function loadSettings () {
+  let fs = require('fs')
+  let rawdata = fs.readFileSync('./settings.json')
+  SETTINGS = JSON.parse(rawdata)
+}
+
+function saveSettings () {
+  console.log('Saving settings...')
+  console.log(SETTINGS)
+  let fs = require('fs')
+  let data = JSON.stringify(SETTINGS)
+  fs.writeFile('./settings.json', data, (err) => {
+    if (err) {
+      setErrorArea('Could not save user settings: ' + err)
+    }
+  })
+}
 
 function setErrorArea (msg) {
   errorArea.innerHTML = msg

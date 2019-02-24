@@ -9,16 +9,24 @@ app.on('window-all-closed', _ => {
   }
 })
 
-ipcMain.on('openLicenseFile', _ => {
-  console.log(dialog.showOpenDialog({
+ipcMain.on('open-license-file', (event, defaultPath) => {
+  dialog.showOpenDialog({
     title: 'Open License log file',
-    defaultPath: '//vms2/FileShare/MC/KeyGenerator/LicenseKeyLog.txt',
-    properties: ['openFile', 'multiSelections']
-  }))
+    defaultPath: defaultPath,
+    properties: ['openFile']
+  }, (file) => {
+    if (file) event.sender.send('selected-license-file', file[0])
+  })
 })
 
-ipcMain.on('openAdapterFile', _ => {
-  // TODO
+ipcMain.on('open-adapter-file', (event, defaultPath) => {
+  dialog.showOpenDialog({
+    title: 'Open Adapter log file',
+    defaultPath: defaultPath,
+    properties: ['openFile']
+  }, (file) => {
+    if (file) event.sender.send('selected-adapter-file', file[0])
+  })
 })
 
 ipcMain.on('invalidLicenseFormat', (event, err) => {
@@ -43,5 +51,9 @@ app.on('ready', _ => {
 
   mainWindow.on('closed', _ => {
     mainWindow = null
+  })
+
+  mainWindow.on('ready-to-show', _ => {
+    ipcMain.send('init-tables')
   })
 })
