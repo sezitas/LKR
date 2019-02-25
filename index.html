@@ -14,29 +14,15 @@
 
 <body>
 
-  <div class="container-fluid my-2">
-    <div class="row">
-      <div class="col">
-        <div class="input-group">
-          <input id="license-search" type="text" class="form-control" placeholder="Search" aria-label="Search">
-          <div class="input-group-append">
-            <button class="btn btn-dark" id="loadLicensesButton">Licenses</button>
-            <button class="btn btn-dark" id="loadAdaptersButton">Adapters</button>
-          </div>
-        </div>
-      </div>
+  <div class="container-fluid mt-2">
+    <div id="alertArea" class="alert alert-primary d-none">
     </div>
   </div>
 
   <div class="container-fluid">
-    <div id="errorArea" class="alert alert-danger d-none">
-    </div>
-  </div>
-
-  <div class="container-fluid">
-    <div class="row">
+    <div class="row pt-2">
       <div class="col-3">
-        <table class="table table-sm table-bordered table-hover" id="adapter-table">
+        <table class="table table-sm table-bordered table-hover bg-light" id="adapter-table">
           <thead class="thead-dark text-center text-nowrap">
             <tr>
               <th>Adapter Name</th>
@@ -48,8 +34,21 @@
         </table>
       </div>
       <div class="col-9">
+        <div class="row mb-2">
+          <div class="col">
+            <div class="input-group">
+              <div class="input-group-append">
+                <div class="btn-group">
+                  <button class="btn btn-dark btn-sm" id="loadAdaptersButton">Adapters</button>
+                  <button class="btn btn-dark btn-sm" id="loadLicensesButton">Licenses</button>
+                </div>
+              </div>
+              <input id="license-search" type="text" class="form-control form-control-sm" placeholder="Search" aria-label="Search">
+            </div>
+          </div>
+        </div>
         <div class="table-responsive">
-          <table class="table table-sm table-bordered table-hover">
+          <table class="table table-sm table-bordered table-hover bg-light">
             <thead class="thead-dark text-nowrap">
               <tr>
                 <th>Client</th>
@@ -69,7 +68,7 @@
   </div>
 
   <script>require('./js/controller')</script>
-  <script>require('./js/filter.js')</script>
+  <script>require('./js/filter')</script>
 
 </body>
 

@@ -7,20 +7,59 @@ var adapterArray = null
 const tBody = document.getElementById('license-tbody')
 const aBody = document.getElementById('adapter-tbody')
 
-const errorArea = document.getElementById('errorArea')
+const errorArea = document.getElementById('alertArea')
 const searchInput = document.getElementById('license-search')
-searchInput.focus()
 
-const loadLicensesButton = document.getElementById('loadLicensesButton')
-loadLicensesButton.addEventListener('click', _ => {
-  ipcRenderer.send('open-license-file', SETTINGS.licensePath)
-})
-const loadAdaptersButton = document.getElementById('loadAdaptersButton')
-loadAdaptersButton.addEventListener('click', _ => {
-  ipcRenderer.send('open-adapter-file', SETTINGS.adapterPath)
-})
+function init () {
+  loadSettings()
+    .then((someSettings) => {
+      SETTINGS = someSettings
+      getLicenses(SETTINGS.licensePath)
+      getAdapters(SETTINGS.adapterPath)
+    })
+    .catch(_ => {
+      SETTINGS = {}
+      setErrorArea('Please load files')
+    })
+  setButtonListeners()
+  searchInput.focus()
+}
 
-init()
+function loadSettings () {
+  return new Promise((resolve, reject) => {
+    let fs = require('fs')
+    fs.readFile('./settings.json', (err, data) => {
+      if (err) {
+        reject(err)
+      } else {
+        resolve(JSON.parse(data))
+      }
+    })
+  })
+}
+
+function saveSettings () {
+  console.log('Saving settings...')
+  console.log(SETTINGS)
+  let fs = require('fs')
+  let data = JSON.stringify(SETTINGS)
+  fs.writeFile('./settings.json', data, (err) => {
+    if (err) {
+      setErrorArea('Could not save user settings: ' + err)
+    }
+  })
+}
+
+function setButtonListeners () {
+  let loadLicensesButton = document.getElementById('loadLicensesButton')
+  loadLicensesButton.addEventListener('click', _ => {
+    ipcRenderer.send('open-license-file')
+  })
+  let loadAdaptersButton = document.getElementById('loadAdaptersButton')
+  loadAdaptersButton.addEventListener('click', _ => {
+    ipcRenderer.send('open-adapter-file')
+  })
+}
 
 ipcRenderer.on('selected-license-file', (event, path) => {
   hideErrorArea()
@@ -35,30 +74,6 @@ ipcRenderer.on('selected-adapter-file', (event, path) => {
   getAdapters(SETTINGS.adapterPath)
   saveSettings()
 })
-
-function init () {
-  loadSettings()
-  getLicenses(SETTINGS.licensePath)
-  getAdapters(SETTINGS.adapterPath)
-}
-
-function loadSettings () {
-  let fs = require('fs')
-  let rawdata = fs.readFileSync('./settings.json')
-  SETTINGS = JSON.parse(rawdata)
-}
-
-function saveSettings () {
-  console.log('Saving settings...')
-  console.log(SETTINGS)
-  let fs = require('fs')
-  let data = JSON.stringify(SETTINGS)
-  fs.writeFile('./settings.json', data, (err) => {
-    if (err) {
-      setErrorArea('Could not save user settings: ' + err)
-    }
-  })
-}
 
 function setErrorArea (msg) {
   errorArea.innerHTML = msg
@@ -135,3 +150,5 @@ async function getLicenses (file) {
     setErrorArea(err.message)
   }
 }
+
+init()
