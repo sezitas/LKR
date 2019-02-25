@@ -8,6 +8,9 @@ const tBody = document.getElementById('license-tbody')
 const aBody = document.getElementById('adapter-tbody')
 
 const errorArea = document.getElementById('errorArea')
+const searchInput = document.getElementById('license-search')
+searchInput.focus()
+
 const loadLicensesButton = document.getElementById('loadLicensesButton')
 loadLicensesButton.addEventListener('click', _ => {
   ipcRenderer.send('open-license-file', SETTINGS.licensePath)

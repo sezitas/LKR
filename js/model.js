@@ -10,7 +10,7 @@ function LicenseItem (line) {
 }
 
 function Adapter (line) {
-  let temp = line.split('|')
+  let temp = line.split(';')
   this.name = temp[0]
   this.adapterID = temp[1]
   this.isInLicense = false
@@ -31,7 +31,7 @@ function checkAdapters (licenseCode, data) {
 }
 
 function isValidAdapterLine (line) {
-  const patt = /^.*\|\d*$/
+  const patt = /^.*\;\d*$/
   return patt.test(line)
 }
 
