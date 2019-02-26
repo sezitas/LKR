@@ -1,9 +1,9 @@
 const { ipcRenderer } = require('electron')
 const Model = require('./model')
 
-var SETTINGS = null
-var licenseArray = null
-var adapterArray = null
+let SETTINGS = null
+let licenseArray = null
+let adapterArray = null
 const tBody = document.getElementById('license-tbody')
 const aBody = document.getElementById('adapter-tbody')
 
@@ -94,7 +94,7 @@ function licenseSelected (e) {
 }
 
 function insertTd (row, value) {
-  var cell = document.createElement('td')
+  let cell = document.createElement('td')
   cell.innerHTML = value
   row.appendChild(cell)
   return cell

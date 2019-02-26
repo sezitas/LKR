@@ -1,19 +1,16 @@
 function LicenseItem (line) {
-  var temp = line.split('|')
-  this.companyName = temp[0]
-  this.version = temp[1]
-  this.beginDate = temp[2]
-  this.endDate = temp[3]
-  this.adapters = temp[4]
-  this.idkWhatThisis = temp[5]
-  this.license = temp[6]
+  [ this.companyName,
+    this.version,
+    this.beginDate,
+    this.endDate,
+    this.adapters,
+    this.idkWhatThisis,
+    this.license ] = line.split('|')
 }
 
 function Adapter (line) {
-  let temp = line.split(';')
-  this.name = temp[0]
-  this.adapterID = temp[1]
-  this.isInLicense = false
+  [ this.name,
+    this.adapterID ] = line.split(';')
   this.checkLicense = (code) => {
     this.isInLicense = !!((parseInt(this.adapterID) & parseInt(code)) !== 0)
   }
@@ -31,15 +28,15 @@ function checkAdapters (licenseCode, data) {
 }
 
 function isValidAdapterLine (line) {
-  const patt = /^.*\;\d*$/
+  const patt = /^.*;\d*$/
   return patt.test(line)
 }
 
 function willLoadAdapters (file) {
   return new Promise((resolve, reject) => {
     let data = []
-    var lineCount = 0
-    var successful = true
+    let lineCount = 0
+    let successful = true
     const fs = require('fs')
     const readline = require('readline')
     const readStream = fs.createReadStream(file)
@@ -81,8 +78,8 @@ function isValidLicenseLine (line) {
 function willLoadLicenses (file) {
   return new Promise((resolve, reject) => {
     let data = []
-    var lineCount = 0
-    var successful = true
+    let lineCount = 0
+    let successful = true
     const fs = require('fs')
     const readline = require('readline')
     const readStream = fs.createReadStream(file)

@@ -1,6 +1,6 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron')
 const path = require('path')
-var mainWindow = null
+let mainWindow = null
 
 // Quit when all windows are closed.
 app.on('window-all-closed', _ => {
