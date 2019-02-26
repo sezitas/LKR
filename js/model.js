@@ -11,7 +11,8 @@ function LicenseItem (line) {
 function Adapter (line) {
   [ this.name,
     this.adapterID ] = line.split(';')
-  this.checkLicense = (code) => {
+  this.isInLicense = false
+  Adapter.prototype.checkLicense = function (code) {
     this.isInLicense = !!((parseInt(this.adapterID) & parseInt(code)) !== 0)
   }
 }

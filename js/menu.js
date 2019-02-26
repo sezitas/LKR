@@ -2,7 +2,7 @@ const { remote } = require('electron')
 const { Menu, MenuItem } = remote
 
 // Build our new menu
-var menu = new Menu()
+let menu = new Menu()
 menu.append(new MenuItem({
   label: 'Delete',
   click: function () {
@@ -20,7 +20,7 @@ menu.append(new MenuItem({
 
 // Add the listener
 document.addEventListener('DOMContentLoaded', function () {
-  var nodeList = document.querySelectorAll('.js-context-menu')
+  let nodeList = document.querySelectorAll('.js-context-menu')
 
   Array.prototype.forEach.call(nodeList, function (item) {
     item.addEventListener('contextmenu', function (event) {
