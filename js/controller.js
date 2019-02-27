@@ -10,7 +10,7 @@ const aBody = document.getElementById('adapter-tbody')
 const errorArea = document.getElementById('alertArea')
 const searchInput = document.getElementById('license-search')
 
-function init () {
+document.addEventListener('DOMContentLoaded', function () {
   loadSettings()
     .then((someSettings) => {
       SETTINGS = someSettings
@@ -21,9 +21,29 @@ function init () {
       SETTINGS = {}
       setErrorArea('Please load files')
     })
-  setButtonListeners()
+
+  let loadLicensesButton = document.getElementById('loadLicensesButton')
+  loadLicensesButton.addEventListener('click', _ => {
+    ipcRenderer.send('open-license-file')
+  })
+  let loadAdaptersButton = document.getElementById('loadAdaptersButton')
+  loadAdaptersButton.addEventListener('click', _ => {
+    ipcRenderer.send('open-adapter-file')
+  })
+
+  // searchInput.addEventListener('keyup', _ => {
+  //   console.log('keyUP')
+  //   let filter = (searchInput.value).toLowerCase()
+  //   let tr = document.querySelectorAll('#license-tbody tr')
+  //   Array.prototype.forEach.call(tr, function (row) {
+  //     row.classList.toggle('d-none', !((row.innerText).toLowerCase().includes(filter)))
+  //     // console.log(row)
+  //     // return (row.innerText).toLowerCase().includes(filter)
+  //   })
+  // })
+
   searchInput.focus()
-}
+})
 
 function loadSettings () {
   return new Promise((resolve, reject) => {
@@ -39,25 +59,12 @@ function loadSettings () {
 }
 
 function saveSettings () {
-  console.log('Saving settings...')
-  console.log(SETTINGS)
   let fs = require('fs')
   let data = JSON.stringify(SETTINGS)
   fs.writeFile('./settings.json', data, (err) => {
     if (err) {
       setErrorArea('Could not save user settings: ' + err)
     }
-  })
-}
-
-function setButtonListeners () {
-  let loadLicensesButton = document.getElementById('loadLicensesButton')
-  loadLicensesButton.addEventListener('click', _ => {
-    ipcRenderer.send('open-license-file')
-  })
-  let loadAdaptersButton = document.getElementById('loadAdaptersButton')
-  loadAdaptersButton.addEventListener('click', _ => {
-    ipcRenderer.send('open-adapter-file')
   })
 }
 
@@ -122,13 +129,8 @@ function updateAdapterTable () {
     let row = document.createElement('tr')
     insertTd(row, adapter.name)
     let td = insertTd(row, adapter.isInLicense)
-    if (td.innerHTML === 'true') {
-      row.classList.add('text-center', 'text-nowrap')
-      // row.classList.add('bg-success', 'text-white', 'text-center')
-    } else {
-      row.classList.add('d-none')
-      // row.classList.add('bg-white', 'text-dark', 'text-center')
-    }
+    row.classList.add('text-center', 'text-nowrap')
+    row.classList.toggle('d-none', !(td.innerHTML === 'true'))
     aBody.appendChild(row)
   })
 }
@@ -150,5 +152,3 @@ async function getLicenses (file) {
     setErrorArea(err.message)
   }
 }
-
-init()
