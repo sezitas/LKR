@@ -2,13 +2,6 @@ const { app, BrowserWindow, ipcMain, dialog } = require('electron')
 const path = require('path')
 let mainWindow = null
 
-// Quit when all windows are closed.
-app.on('window-all-closed', _ => {
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
-})
-
 ipcMain.on('open-license-file', (event) => {
   dialog.showOpenDialog({
     title: 'Open License log file',
@@ -27,10 +20,6 @@ ipcMain.on('open-adapter-file', (event) => {
   })
 })
 
-ipcMain.on('invalidLicenseFormat', (event, err) => {
-  console.log(err.m + ' at line: ' + err.lineCount)
-})
-
 app.on('ready', _ => {
   mainWindow = new BrowserWindow({
     width: 1200,
@@ -43,15 +32,18 @@ app.on('ready', _ => {
       nodeIntegration: true
     }
   })
-
+  
   mainWindow.loadURL(path.join('file://', __dirname, '/index.html'))
   // mainWindow.openDevTools()
-
+  
   mainWindow.on('closed', _ => {
     mainWindow = null
   })
+  
+})
 
-  mainWindow.on('ready-to-show', _ => {
-    ipcMain.send('init-tables')
-  })
+app.on('window-all-closed', _ => {
+  if (process.platform !== 'darwin') {
+    app.quit()
+  }
 })
