@@ -31,16 +31,13 @@ document.addEventListener('DOMContentLoaded', function () {
     ipcRenderer.send('open-adapter-file')
   })
 
-  // searchInput.addEventListener('keyup', _ => {
-  //   console.log('keyUP')
-  //   let filter = (searchInput.value).toLowerCase()
-  //   let tr = document.querySelectorAll('#license-tbody tr')
-  //   Array.prototype.forEach.call(tr, function (row) {
-  //     row.classList.toggle('d-none', !((row.innerText).toLowerCase().includes(filter)))
-  //     // console.log(row)
-  //     // return (row.innerText).toLowerCase().includes(filter)
-  //   })
-  // })
+  searchInput.addEventListener('keyup', _ => {
+    let filter = (searchInput.value).toLowerCase()
+    let tr = document.querySelectorAll('#license-tbody tr')
+    Array.prototype.forEach.call(tr, function (row) {
+      row.classList.toggle('d-none', !((row.textContent).toLowerCase().includes(filter)))
+    })
+  })
 
   searchInput.focus()
 })
