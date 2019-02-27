@@ -39,6 +39,12 @@ document.addEventListener('DOMContentLoaded', function () {
     })
   })
 
+  tBody.addEventListener('click', (event) => {
+    if (event.target.tagName === 'TD') {
+      licenseSelected(event.target)
+    }
+  }, false)
+
   searchInput.focus()
 })
 
@@ -88,8 +94,8 @@ function hideErrorArea () {
   errorArea.classList.add('d-none')
 }
 
-function licenseSelected (e) {
-  let adapterID = e.path[1].cells[4].innerHTML
+function licenseSelected (cell) {
+  let adapterID = cell.parentElement.children[4].innerHTML
   Model.checkAdapters(adapterID, adapterArray)
     .then((data) => {
       adapterArray = data
@@ -105,7 +111,7 @@ function insertTd (row, value) {
 }
 
 function updateLicenseTable () {
-  tBody.innerHTML = ''
+  let myBody = ''
   licenseArray.forEach((license, index) => {
     let row = document.createElement('tr')
     insertTd(row, license.companyName)
@@ -115,21 +121,22 @@ function updateLicenseTable () {
     insertTd(row, license.adapters)
     insertTd(row, license.license)
     row.classList.add('text-nowrap')
-    row.addEventListener('click', licenseSelected)
-    tBody.appendChild(row)
+    myBody += row.outerHTML
   })
+  tBody.innerHTML = myBody
 }
 
 function updateAdapterTable () {
-  aBody.innerHTML = ''
+  let myBody = ''
   adapterArray.forEach((adapter) => {
     let row = document.createElement('tr')
     insertTd(row, adapter.name)
     let td = insertTd(row, adapter.isInLicense)
     row.classList.add('text-center', 'text-nowrap')
     row.classList.toggle('d-none', !(td.innerHTML === 'true'))
-    aBody.appendChild(row)
+    myBody += row.outerHTML
   })
+  aBody.innerHTML = myBody
 }
 
 async function getAdapters (file) {
