@@ -10,18 +10,18 @@
     "package": "electron-packager . --overwrite"
   },
   "dependencies": {
-    "bootstrap": "^4.3.1",
-    "popper.js": "^1.14.7"
+    "electron": "^4.0.6"
   },
   "devDependencies": {
-    "electron": "^4.0.5",
+    "bootstrap": "^4.3.1",
     "electron-packager": "^13.1.0",
     "eslint": "^5.14.1",
     "eslint-config-standard": "^12.0.0",
     "eslint-plugin-import": "^2.16.0",
     "eslint-plugin-node": "^8.0.1",
     "eslint-plugin-promise": "^4.0.1",
-    "eslint-plugin-standard": "^4.0.0"
+    "eslint-plugin-standard": "^4.0.0",
+    "popper.js": "^1.14.7"
   },
   "repository": {
     "type": "git",
