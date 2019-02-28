@@ -23,7 +23,7 @@ ipcMain.on('open-adapter-file', (event) => {
 app.on('ready', _ => {
   mainWindow = new BrowserWindow({
     width: 1200,
-    height: 800,
+    height: 695,
     // 'min-width': 700,
     // 'min-height': 550,
     'accept-first-mouse': true,
@@ -32,10 +32,11 @@ app.on('ready', _ => {
       nodeIntegration: true
     }
   })
-  
-  mainWindow.loadURL(path.join('file://', __dirname, '/index.html'))
+
+  // mainWindow.setMenu(null)
   // mainWindow.openDevTools()
-  
+  mainWindow.loadURL(path.join('file://', __dirname, '/index.html'))
+
   mainWindow.on('closed', _ => {
     mainWindow = null
   })

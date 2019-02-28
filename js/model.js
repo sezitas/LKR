@@ -92,7 +92,7 @@ function willLoadLicenses (file) {
     rl.on('line', (line) => {
       lineCount++
       if (isValidLicenseLine(line)) {
-        data.push(new LicenseItem(line))
+        data.unshift(new LicenseItem(line))
       } else {
         successful = false
         rl.close()
