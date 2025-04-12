@@ -1,132 +1,69 @@
-function LicenseItem(line) {
-	[this.companyName,
-	this.version,
-	this.beginDate,
-	this.endDate,
-	this.adapters,
-	this.idkWhatThisis,
-	this.license] = line.split('|')
+const fs = require('fs')
+const readline = require('readline')
+
+class LicenseItem {
+    constructor(line) {
+        [this.companyName,
+		 this.version,
+		 this.beginDate,
+		 this.endDate,
+         this.adapters,
+		 this.idkWhatThisis,
+		 this.license] = line.split('|')
+    }
 }
 
-function Adapter(line) {
-	[this.name,
-	this.adapterID] = line.split(';')
-	this.isInLicense = false
+class Adapter {
+    constructor(line) {
+        [this.name, this.adapterID] = line.split(';')
+        this.isInLicense = false
+    }
 }
 
-function checkLicense (adapterID, code) {
-	return !!((parseInt(adapterID) & parseInt(code)) !== 0)
-}
-
-function checkAdapters(licenseCode, data) {
-	return new Promise((resolve, reject) => {
-		if (!Array.isArray(data)) {
-            reject(new Error('Data must be an array'))
-            return;
+function readFileLines(file, isValidLine, createItem) {
+    return new Promise((resolve, reject) => {
+        if (!file) {
+            reject(new Error('No file provided'))
+            return
         }
 
-        try {
-            data.forEach(adapter => {
-                adapter.isInLicense = checkLicense(adapter.adapterID, licenseCode)
-            })
-            resolve(data)
-        } catch (err) {
-            reject(err)
-        }
-	})
+        const data = []
+        const readStream = fs.createReadStream(file)
+        const rl = readline.createInterface({
+            input: readStream,
+            crlfDelay: Infinity
+        })
+
+        rl.on('line', line => {
+            if (isValidLine(line)) {
+                data.push(createItem(line))
+            }
+        })
+
+        rl.on('close', () => resolve(data))
+        readStream.on('error', err => reject(err))
+    })
 }
 
-function isValidAdapterLine(line) {
-	const patt = /^.*;\d*$/
-	return patt.test(line)
+const willLoadLicenses = file => 
+    readFileLines(file, 
+        line => /^(.*?\|){6}.*$/.test(line),
+        line => new LicenseItem(line))
+
+const willLoadAdapters = file => 
+    readFileLines(file,
+        line => /^.*;\d*$/.test(line), 
+        line => new Adapter(line))
+
+function checkAdapters(licenseCode, adapters) {
+    if (!Array.isArray(adapters)) {
+        return Promise.reject(new Error('Invalid adapter data'))
+    }
+    
+    adapters.forEach(adapter => {
+        adapter.isInLicense = !!(parseInt(adapter.adapterID) & parseInt(licenseCode))
+    })
+    return Promise.resolve(adapters)
 }
 
-function willLoadAdapters(file) {
-	return new Promise((resolve, reject) => {
-		let data = []
-		let lineCount = 0
-		let successful = true
-		const fs = require('fs')
-		const readline = require('readline')
-		const readStream = fs.createReadStream(file)
-		const rl = readline.createInterface({
-			input: readStream,
-			crlfDelay: Infinity
-		})
-
-		rl.on('line', (line) => {
-			lineCount++
-			if (isValidAdapterLine(line)) {
-				data.push(new Adapter(line))
-			} else {
-				successful = false
-				rl.close()
-				readStream.destroy()
-			}
-		})
-
-		rl.on('close', _ => {
-			if (successful) {
-				resolve(data)
-			} else {
-				reject(Error('Invalid adapter format at line: ' + lineCount))
-			}
-		})
-
-		readStream.on('error', (err) => {
-			reject(err)
-		})
-	})
-}
-
-function isValidLicenseLine(line) {
-	const patt = /^(.*?\|){6}.*$/
-	return patt.test(line)
-}
-
-function willLoadLicenses(file) {
-	return new Promise((resolve, reject) => {
-		let data = []
-		let lineCount = 0
-		let successful = true
-		const fs = require('fs')
-		const readline = require('readline')
-		const readStream = fs.createReadStream(file)
-		const rl = readline.createInterface({
-			input: readStream,
-			crlfDelay: Infinity
-		})
-
-		rl.on('line', (line) => {
-			lineCount++
-			if (isValidLicenseLine(line)) {
-				data.unshift(new LicenseItem(line))
-			} else {
-				successful = false
-				rl.close()
-				readStream.destroy()
-			}
-		})
-
-		rl.on('close', _ => {
-			if (successful) {
-				console.log('licenses:', data)
-				resolve(data)
-			} else {
-				reject(Error('Invalid license format at line: ' + lineCount))
-			}
-			return data
-		})
-
-		readStream.on('error', (err) => {
-			reject(err)
-		})
-	})
-}
-
-module.exports = {
-	willLoadAdapters,
-	willLoadLicenses,
-	checkAdapters,
-	Adapter
-}
+module.exports = { willLoadAdapters, willLoadLicenses, checkAdapters }

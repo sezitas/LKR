@@ -1,31 +1,14 @@
 const fs = require('fs')
+const path = require('path')
 
-function loadSettings() {
-	return new Promise((resolve, reject) => {
-		fs.readFile('./settings.json', (err, data) => {
-			if (err) {
-				reject(err)
-			} else {
-				resolve(JSON.parse(data))
-			}
-		})
-	})
-}
+const settingsPath = path.join(__dirname, '..', 'settings.json')
 
-function saveSettings(SETTINGS) {
-	return new Promise((resolve, reject) => {
-		const data = JSON.stringify(SETTINGS)
-		fs.writeFile('./settings.json', data, (err) => {
-			if (err) {
-				reject(err)
-			} else {
-				resolve()
-			}
-		})
-	})
-}
+const loadSettings = () => 
+    fs.promises.readFile(settingsPath)
+        .then(data => JSON.parse(data))
+        .catch(() => ({}))
 
-module.exports = {
-	loadSettings,
-	saveSettings
-}
+const saveSettings = settings =>
+    fs.promises.writeFile(settingsPath, JSON.stringify(settings, null, 2))
+
+module.exports = { loadSettings, saveSettings }
