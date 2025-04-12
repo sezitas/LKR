@@ -1,5 +1,4 @@
-const { ipcRenderer } = require('electron')
-const Model = require('./model')
+// const Model = require('./model')
 
 let SETTINGS = null
 let licenseArray = null
@@ -11,148 +10,126 @@ const errorArea = document.getElementById('alertArea')
 const searchInput = document.getElementById('license-search')
 
 document.addEventListener('DOMContentLoaded', function () {
-  loadSettings()
-    .then((someSettings) => {
-      SETTINGS = someSettings
-      getLicenses(SETTINGS.licensePath)
-      getAdapters(SETTINGS.adapterPath)
-    })
-    .catch(_ => {
-      SETTINGS = {}
-      setErrorArea('Please load files')
-    })
+	window.electronAPI.loadSettings()
+		.then((someSettings) => {
+			SETTINGS = someSettings
+			getLicenses(SETTINGS.licensePath)
+			getAdapters(SETTINGS.adapterPath)
+		})
+		.catch((err) => {
+			SETTINGS = {}
+			setErrorArea(`Please load files. Error: ${err.message}`)
+		})
 
-  let loadLicensesButton = document.getElementById('loadLicensesButton')
-  loadLicensesButton.addEventListener('click', _ => {
-    ipcRenderer.send('open-license-file')
-  })
-  let loadAdaptersButton = document.getElementById('loadAdaptersButton')
-  loadAdaptersButton.addEventListener('click', _ => {
-    ipcRenderer.send('open-adapter-file')
-  })
+	const loadLicensesButton = document.getElementById('loadLicensesButton')
+	loadLicensesButton.addEventListener('click', () => {
+		window.electronAPI.openFile('license')
+		.then((path) => {
+			console.log('path:', path)
+			hideErrorArea()
+			SETTINGS.licensePath = path
+			getLicenses(SETTINGS.licensePath)
+			window.electronAPI.saveSettings(SETTINGS)
+				.catch((err) => setErrorArea(`Error saving settings: ${err.message}`))
+		})
+		.catch((err) => setErrorArea(`Error loading file: ${err.message}`))
+	})
 
-  searchInput.addEventListener('keyup', _ => {
-    let filter = (searchInput.value).toLowerCase()
-    let tr = document.querySelectorAll('#license-tbody tr')
-    Array.prototype.forEach.call(tr, function (row) {
-      row.classList.toggle('d-none', !((row.textContent).toLowerCase().includes(filter)))
-    })
-  })
+	const loadAdaptersButton = document.getElementById('loadAdaptersButton')
+	loadAdaptersButton.addEventListener('click', async () => {
+		const path = await window.electronAPI.openFile('adapter')
+		hideErrorArea()
+		SETTINGS.adapterPath = path
+		getAdapters(SETTINGS.adapterPath)
+		window.electronAPI.saveSettings(SETTINGS)
+		.catch((err) => setErrorArea(`Error saving settings: ${err.message}`))
+	})
 
-  tBody.addEventListener('click', (event) => {
-    if (event.target.tagName === 'TD') {
-      licenseSelected(event.target)
-    }
-  }, false)
+	searchInput.addEventListener('keyup', _ => {
+		let filter = (searchInput.value).toLowerCase()
+		let tr = document.querySelectorAll('#license-tbody tr')
+		Array.prototype.forEach.call(tr, function (row) {
+			row.classList.toggle('d-none', !((row.textContent).toLowerCase().includes(filter)))
+		})
+	})
 
-  searchInput.focus()
+	tBody.addEventListener('click', (event) => {
+		if (event.target.tagName === 'TD') {
+			licenseSelected(event.target)
+		}
+	}, false)
+
+	searchInput.focus()
 })
 
-function loadSettings () {
-  return new Promise((resolve, reject) => {
-    let fs = require('fs')
-    fs.readFile('./settings.json', (err, data) => {
-      if (err) {
-        reject(err)
-      } else {
-        resolve(JSON.parse(data))
-      }
-    })
-  })
+function setErrorArea(msg) {
+	errorArea.innerHTML = msg
+	errorArea.classList.remove('d-none')
 }
 
-function saveSettings () {
-  let fs = require('fs')
-  let data = JSON.stringify(SETTINGS)
-  fs.writeFile('./settings.json', data, (err) => {
-    if (err) {
-      setErrorArea('Could not save user settings: ' + err)
-    }
-  })
+function hideErrorArea() {
+	errorArea.classList.add('d-none')
 }
 
-ipcRenderer.on('selected-license-file', (event, path) => {
-  hideErrorArea()
-  SETTINGS.licensePath = path
-  getLicenses(SETTINGS.licensePath)
-  saveSettings()
-})
-
-ipcRenderer.on('selected-adapter-file', (event, path) => {
-  hideErrorArea()
-  SETTINGS.adapterPath = path
-  getAdapters(SETTINGS.adapterPath)
-  saveSettings()
-})
-
-function setErrorArea (msg) {
-  errorArea.innerHTML = msg
-  errorArea.classList.remove('d-none')
+function licenseSelected(cell) {
+	let adapterID = cell.parentElement.children[4].innerHTML
+	window.electronAPI.checkAdapters(adapterID, adapterArray)
+		.then((data) => {
+			adapterArray = data
+			updateAdapterTable()
+		})
 }
 
-function hideErrorArea () {
-  errorArea.classList.add('d-none')
+function insertTd(row, value) {
+	let cell = document.createElement('td')
+	cell.innerHTML = value
+	row.appendChild(cell)
+	return cell
 }
 
-function licenseSelected (cell) {
-  let adapterID = cell.parentElement.children[4].innerHTML
-  Model.checkAdapters(adapterID, adapterArray)
-    .then((data) => {
-      adapterArray = data
-      updateAdapterTable()
-    })
+function updateLicenseTable() {
+	let myBody = ''
+	licenseArray.forEach((license, index) => {
+		let row = document.createElement('tr')
+		insertTd(row, license.companyName)
+		insertTd(row, license.version)
+		insertTd(row, license.beginDate)
+		insertTd(row, license.endDate)
+		insertTd(row, license.adapters)
+		insertTd(row, license.license)
+		row.classList.add('text-nowrap')
+		myBody += row.outerHTML
+	})
+	tBody.innerHTML = myBody
 }
 
-function insertTd (row, value) {
-  let cell = document.createElement('td')
-  cell.innerHTML = value
-  row.appendChild(cell)
-  return cell
+function updateAdapterTable() {
+	let myBody = ''
+	adapterArray.forEach((adapter) => {
+		let row = document.createElement('tr')
+		insertTd(row, adapter.name)
+		let td = insertTd(row, adapter.isInLicense)
+		row.classList.add('text-center', 'text-nowrap')
+		row.classList.toggle('d-none', !(td.innerHTML === 'true'))
+		myBody += row.outerHTML
+	})
+	aBody.innerHTML = myBody
 }
 
-function updateLicenseTable () {
-  let myBody = ''
-  licenseArray.forEach((license, index) => {
-    let row = document.createElement('tr')
-    insertTd(row, license.companyName)
-    insertTd(row, license.version)
-    insertTd(row, license.beginDate)
-    insertTd(row, license.endDate)
-    insertTd(row, license.adapters)
-    insertTd(row, license.license)
-    row.classList.add('text-nowrap')
-    myBody += row.outerHTML
-  })
-  tBody.innerHTML = myBody
+async function getAdapters(file) {
+	try {
+		adapterArray = await window.electronAPI.willLoadAdapters(file)
+		updateAdapterTable()
+	} catch (err) {
+		setErrorArea(err.message)
+	}
 }
 
-function updateAdapterTable () {
-  let myBody = ''
-  adapterArray.forEach((adapter) => {
-    let row = document.createElement('tr')
-    insertTd(row, adapter.name)
-    let td = insertTd(row, adapter.isInLicense)
-    row.classList.add('text-center', 'text-nowrap')
-    row.classList.toggle('d-none', !(td.innerHTML === 'true'))
-    myBody += row.outerHTML
-  })
-  aBody.innerHTML = myBody
-}
-
-async function getAdapters (file) {
-  try {
-    adapterArray = await Model.willLoadAdapters(file)
-    updateAdapterTable()
-  } catch (err) {
-    setErrorArea(err.message)
-  }
-}
-
-async function getLicenses (file) {
-  try {
-    licenseArray = await Model.willLoadLicenses(file)
-    updateLicenseTable()
-  } catch (err) {
-    setErrorArea(err.message)
-  }
+async function getLicenses(file) {
+	try {
+		licenseArray = await window.electronAPI.willLoadLicenses(file)
+		updateLicenseTable()
+	} catch (err) {
+		setErrorArea(err.message)
+	}
 }
