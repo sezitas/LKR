@@ -3,7 +3,7 @@ const model = require('./model')
 const settUtil = require('./settUtil')
 
 contextBridge.exposeInMainWorld('electronAPI', {
-	openFile: (fileType) => { ipcRenderer.invoke('open-file', fileType) },
+	openFile: (fileType) => { return ipcRenderer.invoke('open-file', fileType) },
 	willLoadAdapters: (file) => { return model.willLoadAdapters(file) },
 	willLoadLicenses: (file) => { return model.willLoadLicenses(file) },
 	checkAdapters: (licenseCode, data) => { return model.checkAdapters(licenseCode, data) },

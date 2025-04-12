@@ -24,25 +24,27 @@ document.addEventListener('DOMContentLoaded', function () {
 	const loadLicensesButton = document.getElementById('loadLicensesButton')
 	loadLicensesButton.addEventListener('click', () => {
 		window.electronAPI.openFile('license')
-		.then((path) => {
-			console.log('path:', path)
-			hideErrorArea()
-			SETTINGS.licensePath = path
-			getLicenses(SETTINGS.licensePath)
-			window.electronAPI.saveSettings(SETTINGS)
-				.catch((err) => setErrorArea(`Error saving settings: ${err.message}`))
-		})
-		.catch((err) => setErrorArea(`Error loading file: ${err.message}`))
+			.then((path) => {
+				hideErrorArea()
+				SETTINGS.licensePath = path
+				getLicenses(SETTINGS.licensePath)
+				window.electronAPI.saveSettings(SETTINGS)
+					.catch((err) => setErrorArea(`Error saving settings: ${err.message}`))
+			})
+			.catch((err) => setErrorArea(`Error loading file: ${err.message}`))
 	})
 
 	const loadAdaptersButton = document.getElementById('loadAdaptersButton')
-	loadAdaptersButton.addEventListener('click', async () => {
-		const path = await window.electronAPI.openFile('adapter')
-		hideErrorArea()
-		SETTINGS.adapterPath = path
-		getAdapters(SETTINGS.adapterPath)
-		window.electronAPI.saveSettings(SETTINGS)
-		.catch((err) => setErrorArea(`Error saving settings: ${err.message}`))
+	loadAdaptersButton.addEventListener('click', () => {
+		window.electronAPI.openFile('adapter')
+			.then((path) => {
+				hideErrorArea()
+				SETTINGS.adapterPath = path
+				getAdapters(SETTINGS.adapterPath)
+				window.electronAPI.saveSettings(SETTINGS)
+					.catch((err) => setErrorArea(`Error saving settings: ${err.message}`))
+			})
+			.catch((err) => setErrorArea(`Error loading file: ${err.message}`))
 	})
 
 	searchInput.addEventListener('keyup', _ => {

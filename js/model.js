@@ -12,19 +12,27 @@ function Adapter(line) {
 	[this.name,
 	this.adapterID] = line.split(';')
 	this.isInLicense = false
-	Adapter.prototype.checkLicense = function (code) {
-		this.isInLicense = !!((parseInt(this.adapterID) & parseInt(code)) !== 0)
-	}
+}
+
+function checkLicense (adapterID, code) {
+	return !!((parseInt(adapterID) & parseInt(code)) !== 0)
 }
 
 function checkAdapters(licenseCode, data) {
 	return new Promise((resolve, reject) => {
-		data.map((e, i, arr) => {
-			e.checkLicense(licenseCode)
-			if (i === arr.length - 1) {
-				resolve(data)
-			}
-		})
+		if (!Array.isArray(data)) {
+            reject(new Error('Data must be an array'))
+            return;
+        }
+
+        try {
+            data.forEach(adapter => {
+                adapter.isInLicense = checkLicense(adapter.adapterID, licenseCode)
+            })
+            resolve(data)
+        } catch (err) {
+            reject(err)
+        }
 	})
 }
 
@@ -119,5 +127,6 @@ function willLoadLicenses(file) {
 module.exports = {
 	willLoadAdapters,
 	willLoadLicenses,
-	checkAdapters
+	checkAdapters,
+	Adapter
 }

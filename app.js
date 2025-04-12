@@ -7,7 +7,6 @@ async function openFile(fileType) {
 		properties: ['openFile']
 	})
 	if (!canceled) {
-		console.log('filePaths:', filePaths)
 		return filePaths[0]
 	}
 }
@@ -27,8 +26,8 @@ function createWindow() {
 	})
 
 	mainWindow.loadFile('index.html')
-	// mainWindow.setMenu(null)
 	mainWindow.openDevTools()
+	// mainWindow.setMenu(null)
 }
 
 app.whenReady().then(_ => {
